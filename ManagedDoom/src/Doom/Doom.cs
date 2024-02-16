@@ -33,7 +33,6 @@ internal class Fabric : ProjectFabric
             .AddAspectIfEligible<LogAttribute>();
 }
 
-//[assembly: LoggingAspect(AttributeTargetTypes = "HelloWorld.*")]
 public class LogAttribute : OverrideMethodAspect
 {
     public override dynamic? OverrideMethod()
