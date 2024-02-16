@@ -20,6 +20,31 @@ using System.Collections.Generic;
 using ManagedDoom.Audio;
 using ManagedDoom.Video;
 using ManagedDoom.UserInput;
+using Metalama.Framework.Aspects;
+using Metalama.Framework.Fabrics;
+
+internal class Fabric : ProjectFabric
+{
+    public override void AmendProject(IProjectAmender amender) =>
+        amender.Outbound
+            .SelectMany(compilation => compilation.AllTypes)
+            .SelectMany(type => type.AllMethods)
+            .Where(method => method.BelongsToCurrentProject)
+            .AddAspectIfEligible<LogAttribute>();
+}
+
+//[assembly: LoggingAspect(AttributeTargetTypes = "HelloWorld.*")]
+public class LogAttribute : OverrideMethodAspect
+{
+    public override dynamic? OverrideMethod()
+    {
+        Console.WriteLine($"{meta.Target.Method.Name}: start");
+        var result = meta.Proceed();
+        Console.WriteLine($"{meta.Target.Method.Name}: returning {result}.");
+
+        return result;
+    }
+}
 
 namespace ManagedDoom
 {
